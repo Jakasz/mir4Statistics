@@ -13,10 +13,10 @@ class ChartRepository extends ChangeNotifier {
     try {
       allCharts = await ChartsApi().getChartsData();
     } catch (e) {
+
+    } finally {
       isLoading = false;
       notifyListeners();
     }
-    isLoading = false;
-    notifyListeners();
   }
 }

@@ -5,8 +5,8 @@ class AdManager {
 
   void loadRewardedAd() {
     RewardedAd.load(
-        adUnitId: //"ca-app-pub-3940256099942544/5224354917",
-        "ca-app-pub-1492289253182832/3207302325",
+        adUnitId: "ca-app-pub-3940256099942544/5224354917",
+        //"ca-app-pub-1492289253182832/3207302325",
         request: const AdRequest(),
         rewardedAdLoadCallback:
             RewardedAdLoadCallback(onAdLoaded: (RewardedAd ad) {

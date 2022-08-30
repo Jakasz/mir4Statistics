@@ -2,14 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:legionstat/bloc/members/member_state.dart';
 import 'package:legionstat/bloc/members/members_bloc.dart';
 import 'package:legionstat/bloc/members/members_event.dart';
 import 'package:legionstat/views/ads_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../utils/ads_manager.dart';
 import '../charts_screen.dart';
 import 'legion_user.dart';
 
@@ -62,7 +59,7 @@ class HomeWidget extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.all(15.0),
                       child: const Text(
-                        'Choose world or clan to load data',
+                        'Choose world and clan to load data',
                         style: TextStyle(color: Colors.white, fontSize: 18),
                       ),
                     ),

@@ -1,11 +1,11 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:legionstat/api/repository/chart_repository.dart';
-import 'package:legionstat/models/charts_model.dart';
+import 'package:legionstat/views/widget/charts.dart';
+import 'package:legionstat/views/widget/history_widget.dart';
 import 'package:provider/provider.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
 
+import '../api/repository/history_repository.dart';
 import '../utils/circle_indicator.dart';
 
 class ChartsScreen extends StatefulWidget {
@@ -28,16 +28,21 @@ class _ChartsScreenState extends State<ChartsScreen>
     super.initState();
     final chartDataProvider =
         Provider.of<ChartRepository>(context, listen: false);
+    final historyDataProvider =
+        Provider.of<HistoryRepository>(context, listen: false);
+    historyDataProvider.getHistory();
     chartDataProvider.getCharts();
+
   }
 
   @override
   Widget build(BuildContext context) {
     final chartProvider = Provider.of<ChartRepository>(context);
+    final historyProvider = Provider.of<HistoryRepository>(context);
 
     return !chartProvider.isLoading
-        ? Consumer<ChartRepository>(
-            builder: (context, chartsLoadedData, child) {
+        ? Consumer2<ChartRepository, HistoryRepository>(
+            builder: (context, chartsLoadedData, historyLoadedData, child) {
             return Scaffold(
                 appBar: AppBar(
                   backgroundColor: Color(0xff243B55),
@@ -47,17 +52,21 @@ class _ChartsScreenState extends State<ChartsScreen>
                 body: chartsLoadedData.allCharts.length == 0
                     ? Center(
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Padding(
                             padding: EdgeInsets.only(bottom: 25),
                             child: Text(
                               'No Data loaded for this player, try again!',
-                              style: TextStyle(fontSize: 20, color: Colors.white),
+                              style:
+                                  TextStyle(fontSize: 20, color: Colors.white),
                             ),
                           ),
-                          SvgPicture.asset('assets/empty_space.svg',height: 250,)
+                          SvgPicture.asset(
+                            'assets/empty_space.svg',
+                            height: 250,
+                          )
                         ],
                       ))
                     : Center(
@@ -83,65 +92,21 @@ class _ChartsScreenState extends State<ChartsScreen>
                               child: TabBarView(
                                 controller: _chartsController,
                                 children: [
-                                  SfCartesianChart(
-                                    plotAreaBorderColor: Colors.white,
-                                    enableAxisAnimation: true,
-                                    tooltipBehavior:
-                                        TooltipBehavior(enable: true),
-                                    title: ChartTitle(
-                                        text: 'PS History',
-                                        textStyle:
-                                            TextStyle(color: Colors.white)),
-                                    primaryYAxis: NumericAxis(
-                                        labelStyle:
-                                            TextStyle(color: Colors.white),
-                                        axisLine: AxisLine(
-                                          color: Colors.blue,
-                                        )),
-                                    primaryXAxis: DateTimeAxis(
-                                        borderColor: Colors.white,
-                                        labelStyle:
-                                            TextStyle(color: Colors.white),
-                                        axisLine: AxisLine(
-                                          color: Colors.blue,
-                                        )),
-                                    series: <ChartSeries<ChartData, DateTime>>[
-                                      LineSeries(
-                                          dataSource:
-                                              chartsLoadedData.allCharts,
-                                          color: Colors.deepOrange,
-                                          animationDuration: 1000,
-                                          xValueMapper:
-                                              (ChartData chartsLoadedData, _) =>
-                                                  DateTime(
-                                                      int.parse(chartsLoadedData
-                                                          .loadDate
-                                                          .substring(0, 4)),
-                                                      int.parse(chartsLoadedData
-                                                          .loadDate
-                                                          .substring(5, 7)),
-                                                      int.parse(chartsLoadedData
-                                                          .loadDate
-                                                          .substring(8, 10))),
-                                          yValueMapper:
-                                              (ChartData _chartsData, _) =>
-                                                  double.tryParse(
-                                                      _chartsData.battleRate),
-                                          name: 'Date/PS',
-                                          dataLabelSettings: DataLabelSettings(
-                                            isVisible: true,
-                                            textStyle:
-                                                TextStyle(color: Colors.white),
-                                          )),
-                                    ],
-                                  ),
-                                  Container(
-                                      child: Center(
-                                          child: SvgPicture.asset(
-                                    'assets/undraw_searching_re_3ra9.svg',
-                                    height: 250,
-                                    width: 250,
-                                  ))),
+                                  ChartsWidget(
+                                      chartsListValues:
+                                          chartsLoadedData.allCharts),
+                                  historyProvider.isLoading
+                                      ? Container(
+                                          child: Center(
+                                              child: SvgPicture.asset(
+                                          'assets/undraw_searching_re_3ra9.svg',
+                                          height: 250,
+                                          width: 250,
+                                        )))
+                                      : HistoryWidget(
+                                          historyListData:
+                                              historyLoadedData.allHistory,
+                                        ),
                                   // Container(
                                   //   child: Icon(Icons.details),
                                   // )

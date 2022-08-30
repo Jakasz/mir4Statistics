@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:legionstat/api/repository/chart_repository.dart';
+import 'package:legionstat/api/repository/history_repository.dart';
 import 'package:legionstat/views/home.dart';
 import 'package:provider/provider.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -16,16 +17,21 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => ChartRepository(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => ChartRepository(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => HistoryRepository()),
+      ],
       child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-            primarySwatch: Colors.blueGrey,
-            visualDensity: VisualDensity.adaptivePlatformDensity,
-            scaffoldBackgroundColor: Color(0xFF141E30)),
-        home: HomePage()
-      ),
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+              primarySwatch: Colors.blueGrey,
+              visualDensity: VisualDensity.adaptivePlatformDensity,
+              scaffoldBackgroundColor: Color(0xFF141E30)),
+          home: HomePage()),
     );
   }
 }

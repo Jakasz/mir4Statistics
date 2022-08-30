@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:legionstat/bloc/clans/clans_event.dart';
 import 'package:legionstat/bloc/clans/clans_state.dart';
-import 'package:legionstat/bloc/members/member_state.dart';
 
 import '../../api/repository/clans_repository.dart';
 
